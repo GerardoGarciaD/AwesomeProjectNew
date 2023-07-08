@@ -1,3 +1,4 @@
+/* eslint-disable react/self-closing-comp */
 import React, {useState} from 'react';
 import {
   FlatList,
@@ -55,7 +56,17 @@ function App() {
   const pageSize = 4;
   const [pageNumber, setPageNumber] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [renderedData, setRenderedData] = useState([]);
+  const [renderedData, setRenderedData] = useState(data.slice(0, pageSize));
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const pagination = (data, pageNumber, pageSize) => {
+    const startIndex = (pageNumber - 1) * pageSize;
+    if (startIndex >= data.length) {
+      return [];
+    }
+    setPageNumber(pageNumber);
+    return data.slice(startIndex, startIndex + pageSize);
+  };
 
   return (
     <SafeAreaView>
@@ -72,12 +83,24 @@ function App() {
 
         <View style={style.storyContainer}>
           <FlatList
+            //Esto se se utiliza para indicar que se ha llegado a la mitad del scroll y se debe cargar mas data
+            onEndReachedThreshold={0.5}
+            //Aqui es donde se carga mas informacion basado en el numero puesto arriba
+            onEndReached={() => {
+              if (!isLoading) {
+                setIsLoading(true);
+                setRenderedData(prev => [
+                  ...prev,
+                  ...pagination(data, pageNumber + 1, pageSize),
+                ]);
+                setIsLoading(false);
+              }
+            }}
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={data}
-            renderItem={({item}) => (
-              <UserStory firstName={item.firstName} />
-            )}></FlatList>
+            data={renderedData}
+            renderItem={({item}) => <UserStory firstName={item.firstName} />}
+            keyExtractor={item => item.id.toString()}></FlatList>
         </View>
       </ScrollView>
     </SafeAreaView>
