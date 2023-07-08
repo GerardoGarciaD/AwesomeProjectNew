@@ -37,6 +37,10 @@ const style = StyleSheet.create({
     padding: 0,
     margin: 0,
   },
+  storyContainer: {
+    paddingHorizontal: 28,
+    marginTop: 12,
+  },
 });
 
 export default style;
