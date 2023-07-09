@@ -1,0 +1,35 @@
+const {Dimensions} = require('react-native');
+import DeviceInfo from 'react-native-device-info';
+const {width, height} = Dimensions.get('window');
+
+const isSmall = width <= 375 && !DeviceInfo.hasNotch();
+
+const guidelineBaseWidth = () => {
+  if (isSmall) {
+    return 330;
+  }
+  return 350;
+};
+
+const guidelineBaseHeight = () => {
+  if (isSmall) {
+    return 550;
+  } else if (width > 410) {
+    return 620;
+  }
+
+  return 680;
+};
+
+const guideLineBaseFonts = () => {
+  if (width > 410) {
+    return 430;
+  }
+  return 400;
+};
+
+const hotizontalScale = size => (width / guidelineBaseWidth()) * size;
+const verticalScale = size => (height / guidelineBaseHeight()) * size;
+const fontScale = size => Math.round((size * width) / guideLineBaseFonts());
+
+export {hotizontalScale, verticalScale, fontScale};
