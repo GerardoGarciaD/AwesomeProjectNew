@@ -1,4 +1,5 @@
 /* eslint-disable react/self-closing-comp */
+import 'react-native-gesture-handler';
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
@@ -14,6 +15,7 @@ import {faEnvelope} from '@fortawesome/free-regular-svg-icons';
 import style from './assets/styles/main';
 import UserStory from './components/UserStory/UserStory';
 import UserPost from './components/UserPost/UserPost';
+import {NavigationContainer} from '@react-navigation/native';
 
 function App() {
   const data = [
@@ -141,77 +143,83 @@ function App() {
   };
 
   return (
-    <SafeAreaView>
-      <FlatList
-        ListHeaderComponent={
-          <>
-            <View style={style.header}>
-              <Title title="Lets explore"></Title>
-              <Pressable style={style.messageIcon}>
-                <FontAwesomeIcon size={20} color="#CACDDE" icon={faEnvelope} />
-                <View style={style.messageNumberContainer}>
-                  <Text style={style.messageNumber}>2</Text>
-                </View>
-              </Pressable>
-            </View>
+    <NavigationContainer>
+      <SafeAreaView>
+        <FlatList
+          ListHeaderComponent={
+            <>
+              <View style={style.header}>
+                <Title title="Lets explore"></Title>
+                <Pressable style={style.messageIcon}>
+                  <FontAwesomeIcon
+                    size={20}
+                    color="#CACDDE"
+                    icon={faEnvelope}
+                  />
+                  <View style={style.messageNumberContainer}>
+                    <Text style={style.messageNumber}>2</Text>
+                  </View>
+                </Pressable>
+              </View>
 
-            <View style={style.storyContainer}>
-              <FlatList
-                //Esto se se utiliza para indicar que se ha llegado a la mitad del scroll y se debe cargar mas data
-                onEndReachedThreshold={0.5}
-                //Aqui es donde se carga mas informacion basado en el numero puesto arriba
-                onEndReached={() => {
-                  if (!isLoading) {
-                    setIsLoading(true);
-                    setRenderedData(prev => [
-                      ...prev,
-                      ...pagination(data, pageNumber + 1, pageSize),
-                    ]);
-                    setIsLoading(false);
-                  }
-                }}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                data={renderedData}
-                renderItem={({item}) => (
-                  <UserStory firstName={item.firstName} />
-                )}
-                keyExtractor={item => item.id.toString()}
+              <View style={style.storyContainer}>
+                <FlatList
+                  //Esto se se utiliza para indicar que se ha llegado a la mitad del scroll y se debe cargar mas data
+                  onEndReachedThreshold={0.5}
+                  //Aqui es donde se carga mas informacion basado en el numero puesto arriba
+                  onEndReached={() => {
+                    if (!isLoading) {
+                      setIsLoading(true);
+                      setRenderedData(prev => [
+                        ...prev,
+                        ...pagination(data, pageNumber + 1, pageSize),
+                      ]);
+                      setIsLoading(false);
+                    }
+                  }}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  data={renderedData}
+                  renderItem={({item}) => (
+                    <UserStory firstName={item.firstName} />
+                  )}
+                  keyExtractor={item => item.id.toString()}
+                />
+              </View>
+            </>
+          }
+          //Esto se se utiliza para indicar que se ha llegado a la mitad del scroll y se debe cargar mas data
+          onEndReachedThreshold={0.5}
+          //Aqui es donde se carga mas informacion basado en el numero puesto arriba
+          onEndReached={() => {
+            if (!isLoadingPosts) {
+              setIsLoadingPosts(true);
+              setRenderedDataPosts(prev => [
+                ...prev,
+                ...pagination(posts, pageNumberPosts + 1, pageSizePosts, true),
+              ]);
+              setIsLoadingPosts(false);
+            }
+          }}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          data={renderedDataPosts}
+          renderItem={({item}) => (
+            <View style={style.userPostContainer}>
+              <UserPost
+                firstName={item.firstName}
+                lastName={item.lastName}
+                comments={item.comments}
+                likes={item.likes}
+                location={item.location}
+                bookmarks={item.bookmarks}
               />
             </View>
-          </>
-        }
-        //Esto se se utiliza para indicar que se ha llegado a la mitad del scroll y se debe cargar mas data
-        onEndReachedThreshold={0.5}
-        //Aqui es donde se carga mas informacion basado en el numero puesto arriba
-        onEndReached={() => {
-          if (!isLoadingPosts) {
-            setIsLoadingPosts(true);
-            setRenderedDataPosts(prev => [
-              ...prev,
-              ...pagination(posts, pageNumberPosts + 1, pageSizePosts, true),
-            ]);
-            setIsLoadingPosts(false);
-          }
-        }}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        data={renderedDataPosts}
-        renderItem={({item}) => (
-          <View style={style.userPostContainer}>
-            <UserPost
-              firstName={item.firstName}
-              lastName={item.lastName}
-              comments={item.comments}
-              likes={item.likes}
-              location={item.location}
-              bookmarks={item.bookmarks}
-            />
-          </View>
-        )}
-        keyExtractor={item => item.id.toString()}
-      />
-    </SafeAreaView>
+          )}
+          keyExtractor={item => item.id.toString()}
+        />
+      </SafeAreaView>
+    </NavigationContainer>
   );
 }
 
