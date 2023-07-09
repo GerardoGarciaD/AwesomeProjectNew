@@ -1,6 +1,13 @@
 /* eslint-disable react/self-closing-comp */
-import React, {useState} from 'react';
-import {FlatList, Pressable, SafeAreaView, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Dimensions,
+  FlatList,
+  Pressable,
+  SafeAreaView,
+  Text,
+  View,
+} from 'react-native';
 import Title from './components/Title/Title';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faEnvelope} from '@fortawesome/free-regular-svg-icons';
@@ -95,6 +102,17 @@ function App() {
       id: 5,
     },
   ];
+
+  const [screenData, setscreenData] = useState(Dimensions.get('screen'));
+
+  console.log(screenData);
+
+  useEffect(() => {
+    Dimensions.addEventListener('change', result => {
+      console.log('Changed screen data', result.screen);
+      setscreenData(result.screen);
+    });
+  }, []);
 
   const pageSize = 4;
   const [pageNumber, setPageNumber] = useState(1);
