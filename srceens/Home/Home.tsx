@@ -148,9 +148,7 @@ const Home = ({navigation}) => {
           <>
             <View style={style.header}>
               <Title title="Lets explore"></Title>
-              <Pressable
-                style={style.messageIcon}
-                onPress={() => navigation.navigate(Routes.Profile)}>
+              <Pressable style={style.messageIcon}>
                 <FontAwesomeIcon size={20} color="#CACDDE" icon={faEnvelope} />
                 <View style={style.messageNumberContainer}>
                   <Text style={style.messageNumber}>2</Text>
